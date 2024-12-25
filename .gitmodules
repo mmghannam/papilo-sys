@@ -1,0 +1,3 @@
+[submodule "papilo"]
+	path = papilo
+	url = https://github.com/scipopt/papilo.git

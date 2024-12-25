@@ -1,0 +1,12 @@
+[package]
+name = "papilo-sys"
+version = "0.1.0"
+edition = "2021"
+description = "Rust bindings for the PaPILO library"
+links = "papilo"
+
+[dependencies]
+
+[build-dependencies]
+bindgen = "0.71.1"
+cmake = "0.1.52"
