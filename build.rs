@@ -11,13 +11,12 @@ fn build_and_link_papilo() -> PathBuf {
         .profile(build_type)
         .define("SCIP", "off")
         .define("SOPLEX", "off")
-        .define("PAPILO_NO_BINARIES", "On")
+        .define("TBB", "Off")
         .build();
 
-    println!("cargo:rustc-link-search=native={}/lib", dst.display());
-    println!("cargo:rustc-link-search={}/lib64", dst.display());
-    println!("cargo:rustc-link-lib=static=papilo-core");
-    
+    println!("cargo:rustc-link-search={}/lib", dst.display());
+    println!("cargo:rustc-link-lib=papilo-core");
+
     let target = env::var("TARGET").unwrap();
     let apple = target.contains("apple");
     let linux = target.contains("linux");

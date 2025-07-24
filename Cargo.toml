@@ -3,7 +3,7 @@ name = "papilo-sys"
 version = "0.1.0"
 edition = "2021"
 description = "Rust bindings for the PaPILO library"
-links = "papilo"
+links = "papilo-core"
 
 [dependencies]
 
