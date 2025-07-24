@@ -17,6 +17,8 @@ mod tests {
             assert!(!problem.is_null());
             let solver = papilo_solver_create();
             assert!(!solver.is_null());
+            let name = CStr::from_bytes_until_nul(b"x\0").unwrap();
+            papilo_problem_add_col(problem, 1.0, 2.0, b'i', 3.0, name.as_ptr());
             papilo_solver_load_problem(solver, problem);
             papilo_solver_start(solver);
             papilo_problem_free(problem);

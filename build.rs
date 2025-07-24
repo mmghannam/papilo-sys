@@ -13,6 +13,8 @@ fn build_and_link_papilo() -> PathBuf {
         .define("SOPLEX", "off")
         .define("TBB", "Off")
         .define("LUSOL", "Off")
+        .define("GMP", "Off")
+        .build_arg("-j4")
         .build();
 
     println!("cargo:rustc-link-search={}/lib", dst.display());
