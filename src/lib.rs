@@ -13,16 +13,16 @@ mod tests {
     fn test_papilo_basic() {
         let problem_name = CStr::from_bytes_until_nul(b"papilo\0").unwrap();
         unsafe {
-           let problem = papilo_problem_create(f64::INFINITY, problem_name.as_ptr(), 1000, 10, 10);
+            let problem =
+                papilo_problem_create(f64::INFINITY, problem_name.as_ptr(), 1000, 10, 10);
             assert!(!problem.is_null());
-            let solver = papilo_solver_create();
-            assert!(!solver.is_null());
+            let presolver = papilo_presolver_create();
+            assert!(!presolver.is_null());
             let name = CStr::from_bytes_until_nul(b"x\0").unwrap();
             papilo_problem_add_col(problem, 1.0, 2.0, b'i', 3.0, name.as_ptr());
-            papilo_solver_load_problem(solver, problem);
-            papilo_solver_start(solver);
-            papilo_problem_free(problem);
-            papilo_solver_free(solver);
+            papilo_presolver_load_problem(presolver, problem);
+            papilo_presolver_presolve(presolver);
+            papilo_presolver_free(presolver);
         }
     }
 }
