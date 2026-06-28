@@ -77,10 +77,37 @@ fn main() {
 
     println!("cargo:rustc-link-search=native={}", lib_dir.display());
     println!("cargo:rustc-link-lib=dylib=papilopresolve");
+    // An `-rpath` set via `rustc-link-arg` only affects this crate's own
+    // artifacts (e.g. papilo-sys' tests); it does NOT propagate to a dependent
+    // crate's binaries, so those would fail at load time with
+    // "Library not loaded: @rpath/libpapilopresolve.dylib". To make dependent
+    // binaries locate the dylib without any rpath, embed the dylib's absolute
+    // build path as its install name on macOS; the linker then records that
+    // absolute path in every binary that links against it.
     println!("cargo:rustc-link-arg=-Wl,-rpath,{}", lib_dir.display());
 
     if apple {
         println!("cargo:rustc-link-lib=dylib=c++");
+
+        let dylib_path = lib_dir.join("libpapilopresolve.dylib");
+        let status = std::process::Command::new("install_name_tool")
+            .arg("-id")
+            .arg(&dylib_path)
+            .arg(&dylib_path)
+            .status();
+        match status {
+            Ok(s) if s.success() => {}
+            Ok(s) => println!(
+                "cargo:warning=install_name_tool exited with {s}; \
+                 dependent binaries may need DYLD_LIBRARY_PATH to find \
+                 libpapilopresolve.dylib"
+            ),
+            Err(e) => println!(
+                "cargo:warning=failed to run install_name_tool ({e}); \
+                 dependent binaries may need DYLD_LIBRARY_PATH to find \
+                 libpapilopresolve.dylib"
+            ),
+        }
     } else if linux || mingw {
         println!("cargo:rustc-link-lib=dylib=stdc++");
     }
